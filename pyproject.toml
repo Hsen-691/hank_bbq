@@ -16,6 +16,3 @@ dependencies = [
     "python-multipart==0.0.17",
     "slowapi==0.1.9",
 ]
-
-[tool.vercel]
-entrypoint = "backend.app.main:app"
