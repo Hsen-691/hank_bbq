@@ -98,6 +98,14 @@ async def security_headers(request: Request, call_next):
         # Make browsers always revalidate JS/CSS so an edit is never served stale.
         if path.endswith((".js", ".css")):
             h["Cache-Control"] = "no-cache, must-revalidate"
+        elif response.status_code == 200:
+            if path.startswith("/img/uploads/"):
+                # Uploaded photos get a new random name each time, so they never change.
+                h["Cache-Control"] = "public, max-age=31536000, s-maxage=31536000, immutable"
+            else:
+                # Logo, hero, sounds: phones keep them a day; Vercel's CDN keeps them
+                # until the next deploy (a deploy clears the CDN cache).
+                h["Cache-Control"] = "public, max-age=86400, s-maxage=31536000"
     elif path in _PAGES:
         h["Cache-Control"] = "no-cache, must-revalidate"
     else:
