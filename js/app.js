@@ -10507,6 +10507,13 @@ function setSearch(v) {
   renderCategories(); renderMenu();
 }
 function scrollToMenu() { window.scrollTo({ top: Math.max(0, $("#browse").getBoundingClientRect().top + window.scrollY - 70), behavior: "smooth" }); }
+// After picking a category: bring its items to the top, just below the sticky header (its height differs on phones).
+function scrollToItems() {
+  const header = $("#topbar");
+  const offset = (header ? header.getBoundingClientRect().height : 0) + 12;
+  const y = $("#menu").getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top: Math.max(0, y), behavior: REDUCE ? "auto" : "smooth" });
+}
 
 document.addEventListener("click", (ev) => {
   const t = ev.target.closest("button, a, .overlay");
@@ -10535,7 +10542,7 @@ document.addEventListener("click", (ev) => {
   }
   else if (t.matches("[data-cat]")) {
     openCategory(t.dataset.cat);
-    scrollToMenu();
+    scrollToItems();
   } else if (t.matches("[data-auth]")) setAuthMode(t.dataset.auth);
   else if (t.matches("[data-eye]")) {
     const f = $("#fPass"), show = f.type === "password";
